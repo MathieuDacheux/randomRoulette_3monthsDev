@@ -85,7 +85,7 @@ main {
     width: 350px;
     height: 350px;
     border-radius: 50%;
-    background-color: var(--color1);
+    background-color: var(--color2);
     position: relative;
     overflow: hidden;
 }
