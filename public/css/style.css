@@ -17,6 +17,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 html {
@@ -28,6 +29,8 @@ body {
     background-image: linear-gradient(to bottom, rgba(0,0,0,0.35),rgba(0,0,0,0.1)), url('../assets/img/background.jpeg');
     background-position: center;
     background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
 }
 
 /* Font settings */
@@ -149,4 +152,20 @@ input {
     font-size: 1.5rem;
     border-radius: 10px;
     cursor: pointer;
+}
+
+@media screen and (min-width: 0px) and (max-width: 576px) {
+    header {
+        height: 200px;
+    }
+    main {
+        height: calc(100vh - 200px);
+    }
+    h1 {
+        font-size: 3rem;
+        padding: 0rem;
+    }
+    input {
+        margin-top: .5rem
+    }
 }
