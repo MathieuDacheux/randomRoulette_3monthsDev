@@ -1,39 +1,19 @@
-// VARIABLES
+/************************ ************************/
+/******************* VARIABLES *******************/
+/************************ ************************/
 
-// Tableau de la liste des noms de la classe
-const listOfName = [
-    'Claude',
-    'Damien',
-    'Tristan',
-    'Laura',
-    'Paul',
-    'Alexis G',
-    'Alexis F',
-    'Nassim',
-    'Muriel',
-    'Anthonin',
-    'Christopher',
-    'Mathieu',
-    'Daniel',
-    'Thierry'
-];
+// Variables permettant la rotation du container containerWheel
+let rotateDeg;
+let fullRotate = 0;
 
-let choice1;
-let choice2;
-let choice3;
-let choice4;
-let choice5;
-let choice6;
+// Tableau avec l'ensemble des noms de la classe
+const listOfName = ['Claude', 'Damien', 'Tristan', 'Laura', 'Paul', 'Alexis G', 'Alexis F', 'Nassim', 'Muriel', 'Anthonin', 'Christopher', 'Mathieu', 'Daniel'];
 
-const choiceTable = [
-    choice1,
-    choice2,
-    choice3,
-    choice4,
-    choice5,
-    choice6
-];
+// Tableau de l'ensemble des choix générés aléatoirement
+let choiceTable = [];
+let choiceTableTampon = [];
 
+// Tableau de l'ensemble des <div> du DOM
 const wheelParts = [
     caseOne = document.querySelector('.name1'),
     caseTwo = document.querySelector('.name2'),
@@ -43,28 +23,64 @@ const wheelParts = [
     caseSix = document.querySelector('.name6')
 ];
 
-const button = document.querySelector('input');
+// Container de la roue
 const containerWheel = document.querySelector('.spinningWheel');
-let rotateDeg;
-let fullRotate = 0;
 
-// FUNCTIONS
+// Button d'actionnement
+const button = document.querySelector('input');
 
-// Function that generate a random INT 
+/************************ ************************/
+/******************* FONCTIONS *******************/
+/************************ ************************/
+
+// Génération d'un nombre aléatoire dans un intervalle 
 const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// Function thah generate random int for the choiceTable
-const randomArray = () => {
-    for (i = 0; i <= 5; i++) {
-        choiceTable[i] = randomIntFromInterval(1, 13);
+// Génération d'un nombre aléatoire unique
+const generateUniqueValue = (maxLenght, min, max, array) => {
+    for (i = 0; i <= maxLenght; i++) {
+        randomValue = randomIntFromInterval(min, max);
+        if (array.includes(randomValue) == true) {
+            i--;
+        } else {
+            if (randomValue > max == false) {
+                array.push(randomValue)
+            }
+        }
     }
 }
 
-// Function that put name inside the DOM
+// Génération d'un nombre aléatoire unique en comparant avec l'ancien tableu
+const generateNewUniqueValue = (maxLenght, min, max, array1, array2) => {
+    for (i = 0; i <= maxLenght; i++) {
+        newRandomValue = randomIntFromInterval(min, max);
+        if (array1.includes(newRandomValue) == true || array2.includes(newRandomValue) == true) {
+            i--;
+        } else {
+            if (newRandomValue > max == false) {
+                array2.push(newRandomValue)
+            }
+        }
+    }
+}
+
+// Génération de nombres aléatoires uniques pour le tableau choiceTable
+const putUniqueValueInsideArray = () => {
+    if (choiceTable.lenght = 0) {
+        generateUniqueValue(5, 1, 12, choiceTable);
+    } else {
+        choiceTableTampon = choiceTable;
+        choiceTable = [];
+        generateNewUniqueValue(5, 1, 12, choiceTableTampon, choiceTable);
+    }
+    return choiceTable;
+}
+
+// Génération des éléments de wheelParts en fonctions des nombres générés par la fonction randomArray
 const putNameInsideDOM = () => {
-    randomArray();
+    putUniqueValueInsideArray();
     let counter = 0;
     listOfName.forEach((element,index) => {
         choiceTable.forEach(value => {
@@ -76,7 +92,7 @@ const putNameInsideDOM = () => {
     });
 }
 
-// Function that rotate the wheel
+// Génération de la rotation de containerWheel
 const spinTheWheel = () => {
     rotateDeg = randomIntFromInterval(1500, 2000);
     fullRotate += rotateDeg;
@@ -84,11 +100,13 @@ const spinTheWheel = () => {
     containerWheel.style.transition = `5s`;
 }
 
-// WORK
+/************************ ************************/
+/********************** Work *********************/
+/************************ ************************/
+
 button.addEventListener('click', () => {
     putNameInsideDOM();
     setTimeout(() => {
         spinTheWheel();
     }, 1000)
 })
-
