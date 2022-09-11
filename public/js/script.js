@@ -7,7 +7,7 @@ let rotateDeg;
 let fullRotate = 0;
 
 // Tableau avec l'ensemble des noms de la classe
-const listOfName = ['Claude', 'Damien', 'Tristan', 'Laura', 'Paul', 'Alexis G', 'Alexis F', 'Nassim', 'Muriel', 'Anthonin', 'Christopher', 'Mathieu', 'Daniel'];
+let listOfName = ['Claude', 'Damien', 'Tristan', 'Laura', 'Paul', 'Alexis G', 'Alexis F', 'Nassim', 'Muriel', 'Anthonin', 'Christopher', 'Mathieu', 'Daniel'];
 
 // Tableau de l'ensemble des choix générés aléatoirement
 let choiceTable = [];
@@ -23,11 +23,17 @@ const wheelParts = [
     caseSix = document.querySelector('.name6')
 ];
 
+// Triangle rouge
+const redTriangle = document.querySelector('.redTriangle');
+
 // Container de la roue
 const containerWheel = document.querySelector('.spinningWheel');
 
 // Button d'actionnement
 const button = document.querySelector('input');
+
+// Container du gagnant
+const winner = document.querySelector('.winnerName h2');
 
 /************************ ************************/
 /******************* FONCTIONS *******************/
@@ -100,6 +106,24 @@ const spinTheWheel = () => {
     containerWheel.style.transition = `5s`;
 }
 
+// Calcul de l'élement la <div> la plus proche du top de l'écran
+const distanceTopAndDiv = () => {
+    distanceArray = [];
+    wheelParts.forEach(element => {
+        distanceCalc = element.getBoundingClientRect().top;
+        distanceArray.push(distanceCalc);
+    })
+    return distanceArray;
+}
+
+// Trouver l'élément <div> le plus proche en comparant distanceArray & wheelParts
+const compareWheelPartsDistanceArray = () => {
+    distanceTopAndDiv();
+    minValue = Math.min(...distanceArray);
+    minIndex = distanceArray.indexOf(minValue);
+    winner.innerHTML = wheelParts[minIndex].textContent;
+}
+
 /************************ ************************/
 /********************** Work *********************/
 /************************ ************************/
@@ -109,4 +133,7 @@ button.addEventListener('click', () => {
     setTimeout(() => {
         spinTheWheel();
     }, 1000)
+    setTimeout(() => {
+        compareWheelPartsDistanceArray();
+    }, 7000)
 })
