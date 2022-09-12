@@ -82,6 +82,14 @@ main {
     margin-bottom: .5rem;
 }
 
+/* Winner Name */
+
+.winnerContainer {
+    top: 0;
+    position: fixed;
+    z-index: 110000;
+}
+
 /* Wheel */
 
 .spinningWheel {

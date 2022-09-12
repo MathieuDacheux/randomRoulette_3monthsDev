@@ -14,7 +14,6 @@ studentsClass = JSON.parse(localStorage.getItem('studentsClass')) || [];
 
 // Tableau de l'ensemble des choix générés aléatoirement
 let choiceTable = [];
-let choiceTableTampon = [];
 
 // Tableau de l'ensemble des <div> du DOM
 const wheelParts = [
@@ -63,57 +62,39 @@ const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// Génération d'un nombre aléatoire unique
-const generateUniqueValue = (maxLenght, min, max, array) => {
-    for (i = 0; i <= maxLenght; i++) {
-        randomValue = randomIntFromInterval(min, max);
-        if (array.includes(randomValue) == true) {
-            i--;
-        } else {
-            if (randomValue > max == false) {
-                array.push(randomValue)
-            }
-        }
-    }
-}
-
-// Génération d'un nombre aléatoire unique en comparant avec l'ancien tableu
-const generateNewUniqueValue = (maxLenght, min, max, array1, array2) => {
+// Génération d'un nombre aléatoire unique en comparant avec l'ancien tableau
+const generateNewUniqueValue = (maxLenght, min, max) => {
     let counter = 0;
-    studentsClass.forEach(element => {
-        if (element.correction == false) {
-            counter++;
-            if (counter >= 1) {
-                for (i = 0; i <= maxLenght; i++) {
-                    newRandomValue = randomIntFromInterval(min, max);
-                    if (array1.includes(newRandomValue) == true || array2.includes(newRandomValue) == true) {
-                        i--;
-                    } else {
-                        if (newRandomValue > max == false) {
-                            array2.push(newRandomValue)
-                        }
-                    }
-                }
+    choiceTable = [];
+    let indexCorrectionTrue = [];
+    studentsClass.forEach((element, index) => {
+        if (element.correction == true) {
+            indexCorrectionTrue.push(index);
+            counter ++;
+        }   
+    });
+    if (counter < 8) {
+        for (let i = 0; i <= maxLenght; i++) {
+            newRandomValue = randomIntFromInterval(min, max);
+            if (indexCorrectionTrue.includes(newRandomValue) == true || choiceTable.includes(newRandomValue) == true) {
+                i--;
+            } else {
+                choiceTable.push(newRandomValue);
             }
         }
-    });
-}
-
-// Génération de nombres aléatoires uniques pour le tableau choiceTable
-const putUniqueValueInsideArray = () => {
-    if (choiceTable.lenght = 0) {
-        generateUniqueValue(5, 1, 13, choiceTable);
     } else {
-        choiceTableTampon = choiceTable;
-        choiceTable = [];
-        generateNewUniqueValue(5, 1, 13, choiceTableTampon, choiceTable);
+        while (choiceTable.length < 6) {
+            newRandomValue = randomIntFromInterval(min, max);
+            if (indexCorrectionTrue.includes(newRandomValue) == false) {
+                choiceTable.push(newRandomValue);
+            }
+        }
     }
-    return choiceTable;
 }
 
 // Génération des éléments de wheelParts en fonctions des nombres générés par la fonction randomArray
 const putNameInsideDOM = () => {
-    putUniqueValueInsideArray();
+    generateNewUniqueValue(5, 0, 12);
     let counter = 0;
     studentsClass.forEach((element,index) => {
         choiceTable.forEach(value => {
@@ -157,6 +138,26 @@ const compareWheelPartsDistanceArray = () => {
     localStorage.setItem('studentsClass', JSON.stringify(studentsClass));
 }
 
+// Vérification du nombre de correction : true dans le LS
+const verificationCounterCorrection = () => {
+    let counter = 0;
+    studentsClass.forEach(element => {
+        if (element.correction == true) {
+            counter++;
+        }
+    })
+    if (counter == 13) {
+        studentsClass.forEach((element, index) => {
+            replaceItem = {
+                name: element.name,
+                correction: false,
+            }
+            studentsClass.splice(index, 1, replaceItem);
+            localStorage.setItem('studentsClass', JSON.stringify(studentsClass));
+        })
+    }
+}
+
 /************************ ************************/
 /********************** Work *********************/
 /************************ ************************/
@@ -166,6 +167,7 @@ window.addEventListener('load', () => {
 })
 
 button.addEventListener('click', () => {
+    verificationCounterCorrection();
     putNameInsideDOM();
     setTimeout(() => {
         spinTheWheel();
@@ -174,4 +176,4 @@ button.addEventListener('click', () => {
         distanceTopAndDiv();
         compareWheelPartsDistanceArray();
     }, 7000)
-}
+})
