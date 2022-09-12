@@ -9,6 +9,9 @@ let fullRotate = 0;
 // Tableau avec l'ensemble des noms de la classe
 let listOfName = ['Claude', 'Damien', 'Tristan', 'Laura', 'Paul', 'Alexis G', 'Alexis F', 'Nassim', 'Muriel', 'Anthonin', 'Christopher', 'Mathieu', 'Daniel'];
 
+// LocalStorage de listOfName
+studentsClass = JSON.parse(localStorage.getItem('studentsClass')) || [];
+
 // Tableau de l'ensemble des choix générés aléatoirement
 let choiceTable = [];
 let choiceTableTampon = [];
@@ -39,6 +42,22 @@ const winner = document.querySelector('.winnerName h2');
 /******************* FONCTIONS *******************/
 /************************ ************************/
 
+// Mise en place de la liste des élèves dans le localStorage
+const checkLocalStorage = () => {
+    if (localStorage.getItem('studentsClass') === null) {
+        listOfName.forEach(element => {
+            item = {
+                name: element,
+                correction: false,
+            };
+            studentsClass.push(item);
+            localStorage.setItem('studentsClass', JSON.stringify(studentsClass));
+        })
+    } else {
+        return true;
+    }
+}
+
 // Génération d'un nombre aléatoire dans un intervalle 
 const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -60,26 +79,34 @@ const generateUniqueValue = (maxLenght, min, max, array) => {
 
 // Génération d'un nombre aléatoire unique en comparant avec l'ancien tableu
 const generateNewUniqueValue = (maxLenght, min, max, array1, array2) => {
-    for (i = 0; i <= maxLenght; i++) {
-        newRandomValue = randomIntFromInterval(min, max);
-        if (array1.includes(newRandomValue) == true || array2.includes(newRandomValue) == true) {
-            i--;
-        } else {
-            if (newRandomValue > max == false) {
-                array2.push(newRandomValue)
+    let counter = 0;
+    studentsClass.forEach(element => {
+        if (element.correction == false) {
+            counter++;
+            if (counter >= 1) {
+                for (i = 0; i <= maxLenght; i++) {
+                    newRandomValue = randomIntFromInterval(min, max);
+                    if (array1.includes(newRandomValue) == true || array2.includes(newRandomValue) == true) {
+                        i--;
+                    } else {
+                        if (newRandomValue > max == false) {
+                            array2.push(newRandomValue)
+                        }
+                    }
+                }
             }
         }
-    }
+    });
 }
 
 // Génération de nombres aléatoires uniques pour le tableau choiceTable
 const putUniqueValueInsideArray = () => {
     if (choiceTable.lenght = 0) {
-        generateUniqueValue(5, 1, 12, choiceTable);
+        generateUniqueValue(5, 1, 13, choiceTable);
     } else {
         choiceTableTampon = choiceTable;
         choiceTable = [];
-        generateNewUniqueValue(5, 1, 12, choiceTableTampon, choiceTable);
+        generateNewUniqueValue(5, 1, 13, choiceTableTampon, choiceTable);
     }
     return choiceTable;
 }
@@ -88,10 +115,10 @@ const putUniqueValueInsideArray = () => {
 const putNameInsideDOM = () => {
     putUniqueValueInsideArray();
     let counter = 0;
-    listOfName.forEach((element,index) => {
+    studentsClass.forEach((element,index) => {
         choiceTable.forEach(value => {
             if (index == value) {
-                wheelParts[counter].innerHTML = element;
+                wheelParts[counter].innerHTML = element.name;
                 counter++;
             }
         })
@@ -118,15 +145,25 @@ const distanceTopAndDiv = () => {
 
 // Trouver l'élément <div> le plus proche en comparant distanceArray & wheelParts
 const compareWheelPartsDistanceArray = () => {
-    distanceTopAndDiv();
-    minValue = Math.min(...distanceArray);
-    minIndex = distanceArray.indexOf(minValue);
+    let minValue = Math.min(...distanceArray);
+    let minIndex = distanceArray.indexOf(minValue);
     winner.innerHTML = wheelParts[minIndex].textContent;
+    let index = studentsClass.findIndex(item => item.name === wheelParts[minIndex].textContent);
+    replaceItem = {
+        name: wheelParts[minIndex].textContent,
+        correction: true,
+    };
+    studentsClass.splice(index, 1, replaceItem);
+    localStorage.setItem('studentsClass', JSON.stringify(studentsClass));
 }
 
 /************************ ************************/
 /********************** Work *********************/
 /************************ ************************/
+
+window.addEventListener('load', () => {
+    checkLocalStorage();
+})
 
 button.addEventListener('click', () => {
     putNameInsideDOM();
@@ -134,6 +171,7 @@ button.addEventListener('click', () => {
         spinTheWheel();
     }, 1000)
     setTimeout(() => {
+        distanceTopAndDiv();
         compareWheelPartsDistanceArray();
     }, 7000)
-})
+}
