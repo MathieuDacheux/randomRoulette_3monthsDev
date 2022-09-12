@@ -36,14 +36,11 @@ body {
 /* Font settings */
 
 h1 {
-    font-size: 7rem;
+    font-size: 2.5rem;
     text-transform: uppercase;
     color: var(--titleColor);
     text-align: center;
     font-family: 'Carnival';
-    background-color: var(--color2);
-    padding: .5rem 2rem;
-    border-radius: 10px;
 }
 
 div {
@@ -55,7 +52,17 @@ div {
 /* Header */
 
 header {
-    height: 250px;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    width: 90%;
+    height: 80%;
+    border-radius: 10px;
+    background-color: var(--color2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,12 +71,13 @@ header {
 /* Main */
 
 main {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 125px);
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     flex-direction: column;
+    padding-bottom: 2.5rem;
 }
 
 /* Triangle */
@@ -80,14 +88,6 @@ main {
     height: 50px;
     width: 50px;
     margin-bottom: .5rem;
-}
-
-/* Winner Name */
-
-.winnerContainer {
-    top: 0;
-    position: fixed;
-    z-index: 110000;
 }
 
 /* Wheel */
@@ -104,7 +104,7 @@ main {
 .spinningWheel div {
     z-index: 2;
     width: 200px;
-    height: 50%;
+    height: 51%;
     clip-path: polygon(100% 0, 50% 100%, 0 0);
     position: absolute;
     transform: translateX(-50%);
@@ -151,29 +151,26 @@ main {
 
 /* Button */
 
-input {
+input, p {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--color2);
-    border: 0px;
-    padding: .5rem 1rem;
-    margin-top: 1.5rem;
     color: var(--textColor);
-    font-size: 1.5rem;
+    padding: .5rem 1rem;
     border-radius: 10px;
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
     cursor: pointer;
+    border: 0px;
 }
 
-@media screen and (min-width: 0px) and (max-width: 576px) {
-    header {
-        height: 200px;
-    }
-    main {
-        height: calc(100vh - 200px);
-    }
+.hidden {
+    display: none;
+}
+
+@media screen and (min-width: 1200px) {
     h1 {
-        font-size: 3rem;
-        padding: 0rem;
-    }
-    input {
-        margin-top: .5rem
+        font-size: 5rem;
     }
 }

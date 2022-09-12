@@ -33,9 +33,10 @@ const containerWheel = document.querySelector('.spinningWheel');
 
 // Button d'actionnement
 const button = document.querySelector('input');
+const buttonHidden = document.querySelector('p');
 
 // Container du gagnant
-const winner = document.querySelector('.winnerName h2');
+const winnerContent = document.querySelector('nav h1');
 
 /************************ ************************/
 /******************* FONCTIONS *******************/
@@ -55,6 +56,18 @@ const checkLocalStorage = () => {
     } else {
         return true;
     }
+}
+
+// Désactivation de l'input après le premier clique
+const disableInput = () => {
+    button.style.display = 'none';
+    buttonHidden.style.display = 'block';
+}
+
+// Réactivitation de l'input à la fin de l'événément complet
+const activateInput = () => {
+    button.style.display = 'block';
+    buttonHidden.style.display = 'none';
 }
 
 // Génération d'un nombre aléatoire dans un intervalle 
@@ -124,11 +137,16 @@ const distanceTopAndDiv = () => {
     return distanceArray;
 }
 
+// Fonction qui remet en place le titre originel du site
+const returnToOriginalTitle = () => {
+    winnerContent.innerHTML = `La roue de l\'infortune`;
+}
+
 // Trouver l'élément <div> le plus proche en comparant distanceArray & wheelParts
 const compareWheelPartsDistanceArray = () => {
     let minValue = Math.min(...distanceArray);
     let minIndex = distanceArray.indexOf(minValue);
-    winner.innerHTML = wheelParts[minIndex].textContent;
+    winnerContent.innerHTML = wheelParts[minIndex].textContent;
     let index = studentsClass.findIndex(item => item.name === wheelParts[minIndex].textContent);
     replaceItem = {
         name: wheelParts[minIndex].textContent,
@@ -136,6 +154,9 @@ const compareWheelPartsDistanceArray = () => {
     };
     studentsClass.splice(index, 1, replaceItem);
     localStorage.setItem('studentsClass', JSON.stringify(studentsClass));
+    setTimeout(() => {
+        returnToOriginalTitle();
+    }, 5000)
 }
 
 // Vérification du nombre de correction : true dans le LS
@@ -162,11 +183,14 @@ const verificationCounterCorrection = () => {
 /********************** Work *********************/
 /************************ ************************/
 
+// Au chargement de la page, regarde le LS s'il existe ou l'initialise à partir du tableau listNames
 window.addEventListener('load', () => {
     checkLocalStorage();
 })
 
+// Au clique sur le button déclanche l'ensemble des fonctions
 button.addEventListener('click', () => {
+    disableInput();
     verificationCounterCorrection();
     putNameInsideDOM();
     setTimeout(() => {
@@ -176,4 +200,7 @@ button.addEventListener('click', () => {
         distanceTopAndDiv();
         compareWheelPartsDistanceArray();
     }, 7000)
+    setTimeout(() => {
+        activateInput();
+    }, 9000)
 })
